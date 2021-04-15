@@ -6,9 +6,9 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
 
-@class PresenterModelRestaurant, PresenterKotlinException, PresenterKotlinPair<__covariant A, __covariant B>, PresenterModelObj, PresenterKotlinThrowable, PresenterKotlinArray<T>;
+@class PresenterKotlinException, PresenterModelRestaurant, PresenterKotlinThrowable, PresenterKotlinArray<T>;
 
-@protocol PresenterIFavProviderListener, PresenterIImageProviderListener, PresenterIRestaurantProviderListener, PresenterIHomeView, PresenterIHomePresenter, PresenterIRestaurantProvider, PresenterIFavProvider, PresenterIImageProvider, PresenterKotlinIterator;
+@protocol PresenterIFreezer, PresenterIFavProviderListener, PresenterIImageProviderListener, PresenterIRestaurantProviderListener, PresenterIHomeView, PresenterIHomePresenter, PresenterIRestaurantProvider, PresenterIFavProvider, PresenterIImageProvider, PresenterKotlinIterator;
 
 NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic push
@@ -138,43 +138,57 @@ __attribute__((swift_name("KotlinBoolean")))
 + (instancetype)numberWithBool:(BOOL)value;
 @end;
 
+__attribute__((swift_name("IFreezer")))
+@protocol PresenterIFreezer
+@required
+- (id)freezeObj:(id)obj __attribute__((swift_name("freeze(obj:)")));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("Freezer")))
+@interface PresenterFreezer : PresenterBase <PresenterIFreezer>
+- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
++ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
+- (id)freezeObj:(id)obj __attribute__((swift_name("freeze(obj:)")));
+@end;
+
 __attribute__((swift_name("IFavProvider")))
 @protocol PresenterIFavProvider
 @required
 - (void)addListenerFavListener:(id<PresenterIFavProviderListener>)favListener __attribute__((swift_name("addListener(favListener:)")));
-- (void)deleteElement:(PresenterModelRestaurant *)element __attribute__((swift_name("delete(element:)")));
+- (void)deleteName:(NSString *)name __attribute__((swift_name("delete(name:)")));
 - (void)get __attribute__((swift_name("get()")));
 - (void)removeListenerFavListener:(id<PresenterIFavProviderListener>)favListener __attribute__((swift_name("removeListener(favListener:)")));
-- (void)saveElement:(PresenterModelRestaurant *)element __attribute__((swift_name("save(element:)")));
+- (void)saveName:(NSString *)name __attribute__((swift_name("save(name:)")));
 @end;
 
 __attribute__((swift_name("IFavProviderListener")))
 @protocol PresenterIFavProviderListener
 @required
 - (void)onErrorError:(PresenterKotlinException *)error __attribute__((swift_name("onError(error:)")));
-- (void)onReceiveElements:(NSArray<PresenterModelRestaurant *> *)elements __attribute__((swift_name("onReceive(elements:)")));
+- (void)onReceiveNames:(NSArray<NSString *> *)names __attribute__((swift_name("onReceive(names:)")));
 @end;
 
 __attribute__((swift_name("IImageProvider")))
 @protocol PresenterIImageProvider
 @required
 - (void)addListenerImgListener:(id<PresenterIImageProviderListener>)imgListener __attribute__((swift_name("addListener(imgListener:)")));
-- (void)getUrl:(NSString *)url __attribute__((swift_name("get(url:)")));
+- (void)getImgRef:(NSString *)imgRef __attribute__((swift_name("get(imgRef:)")));
 - (void)removeListenerImgListener:(id<PresenterIImageProviderListener>)imgListener __attribute__((swift_name("removeListener(imgListener:)")));
 @end;
 
 __attribute__((swift_name("IImageProviderListener")))
 @protocol PresenterIImageProviderListener
 @required
-- (void)onErrorUrl:(NSString *)url error:(PresenterKotlinException *)error __attribute__((swift_name("onError(url:error:)")));
-- (void)onReceiveUrl:(NSString *)url imgBase64:(NSString *)imgBase64 __attribute__((swift_name("onReceive(url:imgBase64:)")));
+- (void)onErrorImgRef:(NSString *)imgRef error:(PresenterKotlinException *)error __attribute__((swift_name("onError(imgRef:error:)")));
+- (void)onReceiveImgRef:(NSString *)imgRef imgBase64:(NSString *)imgBase64 __attribute__((swift_name("onReceive(imgRef:imgBase64:)")));
 @end;
 
 __attribute__((swift_name("IRestaurantProvider")))
 @protocol PresenterIRestaurantProvider
 @required
 - (void)addListenerRestListener:(id<PresenterIRestaurantProviderListener>)restListener __attribute__((swift_name("addListener(restListener:)")));
-- (void)getNe:(PresenterKotlinPair<PresenterDouble *, PresenterDouble *> *)ne sw:(PresenterKotlinPair<PresenterDouble *, PresenterDouble *> *)sw __attribute__((swift_name("get(ne:sw:)")));
+- (void)getLat:(double)lat lng:(double)lng rad:(double)rad __attribute__((swift_name("get(lat:lng:rad:)")));
 - (void)removeListenerRestListener:(id<PresenterIRestaurantProviderListener>)restListener __attribute__((swift_name("removeListener(restListener:)")));
 - (void)searchQuery:(NSString *)query __attribute__((swift_name("search(query:)")));
 @end;
@@ -183,64 +197,40 @@ __attribute__((swift_name("IRestaurantProviderListener")))
 @protocol PresenterIRestaurantProviderListener
 @required
 - (void)onErrorError:(PresenterKotlinException *)error __attribute__((swift_name("onError(error:)")));
-- (void)onReceiveNe:(PresenterKotlinPair<PresenterDouble *, PresenterDouble *> *)ne sw:(PresenterKotlinPair<PresenterDouble *, PresenterDouble *> *)sw elements:(NSArray<PresenterModelRestaurant *> *)elements __attribute__((swift_name("onReceive(ne:sw:elements:)")));
 - (void)onReceiveQuery:(NSString *)query elements:(NSArray<PresenterModelRestaurant *> *)elements __attribute__((swift_name("onReceive(query:elements:)")));
+- (void)onReceiveElements:(NSArray<PresenterModelRestaurant *> *)elements __attribute__((swift_name("onReceive(elements:)")));
 @end;
 
 __attribute__((swift_name("IHomePresenter")))
 @protocol PresenterIHomePresenter
 @required
-- (void)deleteFavRestaurant:(PresenterModelRestaurant *)restaurant __attribute__((swift_name("deleteFav(restaurant:)")));
+- (void)deleteFavName:(NSString *)name __attribute__((swift_name("deleteFav(name:)")));
 - (void)queryName:(NSString *)name __attribute__((swift_name("query(name:)")));
-- (void)saveFavRestaurant:(PresenterModelRestaurant *)restaurant __attribute__((swift_name("saveFav(restaurant:)")));
+- (void)saveFavName:(NSString *)name __attribute__((swift_name("saveFav(name:)")));
 - (void)setViewView:(id<PresenterIHomeView>)view __attribute__((swift_name("setView(view:)")));
-- (void)showNe:(PresenterKotlinPair<PresenterDouble *, PresenterDouble *> *)ne sw:(PresenterKotlinPair<PresenterDouble *, PresenterDouble *> *)sw __attribute__((swift_name("show(ne:sw:)")));
+- (void)showLat:(double)lat lng:(double)lng __attribute__((swift_name("show(lat:lng:)")));
 - (void)shutdown __attribute__((swift_name("shutdown()")));
 @end;
 
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("HomePresenter")))
 @interface PresenterHomePresenter : PresenterBase <PresenterIHomePresenter>
-- (instancetype)initWithRestProvider:(id<PresenterIRestaurantProvider> _Nullable)restProvider favoritesProvider:(id<PresenterIFavProvider> _Nullable)favoritesProvider imageProvider:(id<PresenterIImageProvider> _Nullable)imageProvider __attribute__((swift_name("init(restProvider:favoritesProvider:imageProvider:)"))) __attribute__((objc_designated_initializer));
-- (void)deleteFavRestaurant:(PresenterModelRestaurant *)restaurant __attribute__((swift_name("deleteFav(restaurant:)")));
+- (instancetype)initWithFreezer:(id<PresenterIFreezer> _Nullable)freezer restProvider:(id<PresenterIRestaurantProvider> _Nullable)restProvider favoritesProvider:(id<PresenterIFavProvider> _Nullable)favoritesProvider imageProvider:(id<PresenterIImageProvider> _Nullable)imageProvider searchRadius:(double)searchRadius __attribute__((swift_name("init(freezer:restProvider:favoritesProvider:imageProvider:searchRadius:)"))) __attribute__((objc_designated_initializer));
+- (void)deleteFavName:(NSString *)name __attribute__((swift_name("deleteFav(name:)")));
 - (void)queryName:(NSString *)name __attribute__((swift_name("query(name:)")));
-- (void)saveFavRestaurant:(PresenterModelRestaurant *)restaurant __attribute__((swift_name("saveFav(restaurant:)")));
+- (void)saveFavName:(NSString *)name __attribute__((swift_name("saveFav(name:)")));
 - (void)setViewView:(id<PresenterIHomeView>)view __attribute__((swift_name("setView(view:)")));
-- (void)showNe:(PresenterKotlinPair<PresenterDouble *, PresenterDouble *> *)ne sw:(PresenterKotlinPair<PresenterDouble *, PresenterDouble *> *)sw __attribute__((swift_name("show(ne:sw:)")));
+- (void)showLat:(double)lat lng:(double)lng __attribute__((swift_name("show(lat:lng:)")));
 - (void)shutdown __attribute__((swift_name("shutdown()")));
 @end;
 
 __attribute__((swift_name("IHomeView")))
 @protocol PresenterIHomeView
 @required
-- (void)displayFavsFavs:(NSArray<PresenterModelRestaurant *> *)favs __attribute__((swift_name("displayFavs(favs:)")));
-- (void)displayImgUrl:(NSString *)url imgBase64:(NSString *)imgBase64 __attribute__((swift_name("displayImg(url:imgBase64:)")));
+- (void)displayFavsFavs:(NSArray<NSString *> *)favs __attribute__((swift_name("displayFavs(favs:)")));
+- (void)displayImgImgRef:(NSString *)imgRef imgBase64:(NSString *)imgBase64 __attribute__((swift_name("displayImg(imgRef:imgBase64:)")));
 - (void)displayRestsRests:(NSArray<PresenterModelRestaurant *> *)rests __attribute__((swift_name("displayRests(rests:)")));
 - (void)errorError:(PresenterKotlinException *)error __attribute__((swift_name("error(error:)")));
-@end;
-
-__attribute__((swift_name("ModelObj")))
-@interface PresenterModelObj : PresenterBase
-- (instancetype)initWithId:(int32_t)id __attribute__((swift_name("init(id:)"))) __attribute__((objc_designated_initializer));
-@property (readonly) int32_t id __attribute__((swift_name("id")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ModelRestaurant")))
-@interface PresenterModelRestaurant : PresenterModelObj
-- (instancetype)initWithId:(int32_t)id iconUrl:(NSString *)iconUrl name:(NSString *)name supportText:(NSString *)supportText price:(NSString *)price score:(double)score numReviews:(int32_t)numReviews lat:(double)lat lon:(double)lon __attribute__((swift_name("init(id:iconUrl:name:supportText:price:score:numReviews:lat:lon:)"))) __attribute__((objc_designated_initializer));
-- (instancetype)initWithId:(int32_t)id __attribute__((swift_name("init(id:)"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *iconUrl __attribute__((swift_name("iconUrl")));
-@property (readonly) double lat __attribute__((swift_name("lat")));
-@property (readonly) double lon __attribute__((swift_name("lon")));
-@property (readonly) NSString *name __attribute__((swift_name("name")));
-@property (readonly) int32_t numReviews __attribute__((swift_name("numReviews")));
-@property (readonly) NSString *price __attribute__((swift_name("price")));
-@property (readonly) double score __attribute__((swift_name("score")));
-@property (readonly) NSString *supportText __attribute__((swift_name("supportText")));
 @end;
 
 __attribute__((swift_name("KotlinThrowable")))
@@ -267,17 +257,29 @@ __attribute__((swift_name("KotlinException")))
 @end;
 
 __attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("KotlinPair")))
-@interface PresenterKotlinPair<__covariant A, __covariant B> : PresenterBase
-- (instancetype)initWithFirst:(A _Nullable)first second:(B _Nullable)second __attribute__((swift_name("init(first:second:)"))) __attribute__((objc_designated_initializer));
-- (A _Nullable)component1 __attribute__((swift_name("component1()")));
-- (B _Nullable)component2 __attribute__((swift_name("component2()")));
-- (PresenterKotlinPair<A, B> *)doCopyFirst:(A _Nullable)first second:(B _Nullable)second __attribute__((swift_name("doCopy(first:second:)")));
-- (BOOL)equalsOther:(id _Nullable)other __attribute__((swift_name("equals(other:)")));
-- (int32_t)hashCode __attribute__((swift_name("hashCode()")));
-- (NSString *)toString __attribute__((swift_name("toString()")));
-@property (readonly) A _Nullable first __attribute__((swift_name("first")));
-@property (readonly) B _Nullable second __attribute__((swift_name("second")));
+__attribute__((swift_name("ModelRestaurant")))
+@interface PresenterModelRestaurant : PresenterBase
+- (instancetype)initWithIconRef:(NSString *)iconRef name:(NSString *)name formattedAddress:(NSString *)formattedAddress price:(int32_t)price score:(double)score numReviews:(int32_t)numReviews lat:(double)lat lng:(double)lng __attribute__((swift_name("init(iconRef:name:formattedAddress:price:score:numReviews:lat:lng:)"))) __attribute__((objc_designated_initializer));
+- (NSString *)component1 __attribute__((swift_name("component1()")));
+- (NSString *)component2 __attribute__((swift_name("component2()")));
+- (NSString *)component3 __attribute__((swift_name("component3()")));
+- (int32_t)component4 __attribute__((swift_name("component4()")));
+- (double)component5 __attribute__((swift_name("component5()")));
+- (int32_t)component6 __attribute__((swift_name("component6()")));
+- (double)component7 __attribute__((swift_name("component7()")));
+- (double)component8 __attribute__((swift_name("component8()")));
+- (PresenterModelRestaurant *)doCopyIconRef:(NSString *)iconRef name:(NSString *)name formattedAddress:(NSString *)formattedAddress price:(int32_t)price score:(double)score numReviews:(int32_t)numReviews lat:(double)lat lng:(double)lng __attribute__((swift_name("doCopy(iconRef:name:formattedAddress:price:score:numReviews:lat:lng:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) NSString *formattedAddress __attribute__((swift_name("formattedAddress")));
+@property (readonly) NSString *iconRef __attribute__((swift_name("iconRef")));
+@property (readonly) double lat __attribute__((swift_name("lat")));
+@property (readonly) double lng __attribute__((swift_name("lng")));
+@property (readonly) NSString *name __attribute__((swift_name("name")));
+@property (readonly) int32_t numReviews __attribute__((swift_name("numReviews")));
+@property (readonly) int32_t price __attribute__((swift_name("price")));
+@property (readonly) double score __attribute__((swift_name("score")));
 @end;
 
 __attribute__((objc_subclassing_restricted))
